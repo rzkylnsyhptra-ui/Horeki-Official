@@ -1,18 +1,910 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>room musik horeki</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a1a;
+            background-image:
+                radial-gradient(ellipse at 10% 30%, rgba(120, 0, 255, 0.30) 0%, transparent 55%),
+                radial-gradient(ellipse at 90% 70%, rgba(255, 0, 150, 0.25) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 100%, rgba(0, 200, 255, 0.12) 0%, transparent 45%),
+                linear-gradient(145deg, #0a0a1a 0%, #15082a 100%);
+            background-attachment: fixed;
+            padding: 16px;
+        }
+        .music-card {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(16, 8, 32, 0.70);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 44px;
+            padding: 28px 22px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .music-card::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: conic-gradient(from 0deg at 50% 50%,
+                    rgba(130, 0, 255, 0.07),
+                    rgba(0, 200, 255, 0.04),
+                    rgba(255, 0, 150, 0.07),
+                    rgba(130, 0, 255, 0.07));
+            animation: spinGlow 25s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes spinGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .music-card>* {
+            position: relative;
+            z-index: 1;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .profile-img {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            background: #15082a;
+        }
+        .header-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .header-info .web-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            letter-spacing: 0.3px;
+        }
+        .header-info .web-name span {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-info .sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.40);
+            font-weight: 300;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .header-info .sub i {
+            color: #a855f7;
+            font-size: 11px;
+        }
+        .header-info .beta-badge {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(168, 85, 247, 0.20);
+            color: #c084fc;
+            padding: 2px 10px;
+            border-radius: 30px;
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            margin-left: 4px;
+        }
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(4px);
+        }
+        .now-playing .artwork {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #15082a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            flex-shrink: 0;
+        }
+        .now-playing .np-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .now-playing .np-info .np-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .now-playing .np-info .np-artist {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            font-weight: 300;
+        }
+        .now-playing .np-status {
+            font-size: 12px;
+            color: #a855f7;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .now-playing .np-status i {
+            font-size: 9px;
+            animation: pulseDot 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 0.25; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 18px;
+            padding: 4px 0;
+        }
+        .player-controls button {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.50);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .player-controls button:hover {
+            color: #fff;
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.15);
+            transform: scale(1.04);
+        }
+        .player-controls .btn-play {
+            width: 64px;
+            height: 64px;
+            font-size: 28px;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: #fff;
+            border: none;
+            box-shadow: 0 8px 36px rgba(168, 85, 247, 0.30);
+        }
+        .player-controls .btn-play:hover {
+            transform: scale(1.06);
+            box-shadow: 0 12px 48px rgba(168, 85, 247, 0.45);
+            background: linear-gradient(135deg, #b96aff, #f05aae);
+        }
+        .player-controls .btn-play i {
+            margin-left: 3px;
+        }
+        .progress-wrap {
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.07);
+            cursor: pointer;
+            position: relative;
+            transition: height 0.2s;
+        }
+        .progress-bar:hover {
+            height: 7px;
+        }
+        .progress-bar .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            transition: width 0.08s linear;
+            position: relative;
+        }
+        .progress-bar .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: -4px;
+            width: 13px;
+            height: 13px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 24px rgba(168, 85, 247, 0.5);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .progress-bar:hover .progress-fill::after {
+            opacity: 1;
+        }
+        .time-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.30);
+            margin-top: 5px;
+            font-weight: 300;
+            letter-spacing: 0.2px;
+        }
+        .playlist {
+            margin-top: 4px;
+        }
+        .playlist-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.40);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .playlist-title i {
+            font-size: 12px;
+            color: #a855f7;
+        }
+        .playlist-title .count {
+            font-weight: 300;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.20);
+            margin-left: auto;
+        }
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.12);
+            transform: translateX(4px);
+        }
+        .playlist-item.active {
+            background: rgba(168, 85, 247, 0.08);
+            border-color: rgba(168, 85, 247, 0.20);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.04);
+        }
+        .playlist-item .pl-index {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s;
+        }
+        .playlist-item.active .pl-index {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: #fff;
+            border-color: transparent;
+        }
+        .playlist-item .pl-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .playlist-item .pl-info .pl-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .playlist-item .pl-info .pl-artist {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.28);
+            font-weight: 300;
+        }
+        .playlist-item .pl-play {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 16px;
+            transition: all 0.2s;
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .playlist-item.active .pl-play {
+            color: #a855f7;
+        }
+        .playlist-item:hover .pl-play {
+            color: rgba(255, 255, 255, 0.50);
+        }
+        .playlist-item.active:hover .pl-play {
+            color: #ec4899;
+        }
+        .playlist-item .pl-dur {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.18);
+            font-weight: 300;
+            flex-shrink: 0;
+            min-width: 36px;
+            text-align: right;
+        }
+        .footer {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .footer-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .footer .info-version {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer .info-version i {
+            color: #a855f7;
+            font-size: 12px;
+        }
+        .footer .info-version .version {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.35);
+        }
+        .btn-contact {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 20px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(37, 211, 102, 0.20);
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-contact:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 36px rgba(37, 211, 102, 0.35);
+        }
+        .btn-contact i {
+            font-size: 16px;
+        }
+        .footer .credit {
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.12);
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 480px) {
+            .music-card {
+                padding: 20px 14px 22px;
+                border-radius: 32px;
+            }
+            .header-info .web-name {
+                font-size: 18px;
+            }
+            .profile-img {
+                width: 54px;
+                height: 54px;
+            }
+            .player-controls .btn-play {
+                width: 56px;
+                height: 56px;
+                font-size: 24px;
+            }
+            .player-controls button {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+            .playlist-item {
+                padding: 8px 10px;
+            }
+            .playlist-item .pl-title {
+                font-size: 13px;
+            }
+            .footer-top {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-contact {
+                justify-content: center;
+            }
+            .now-playing .artwork {
+                width: 44px;
+                height: 44px;
+            }
+            .now-playing .np-info .np-title {
+                font-size: 13px;
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.25);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-card">
+        <!-- HEADER -->
+        <div class="header">
+            <img class="profile-img" src="https://c.termai.cc/i178/Ktk.jpg" alt="profile horeki" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%2315082a%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23a855f7%22 font-size=%2238%22 font-family=%22sans-serif%22%3E🎵%3C/text%3E%3C/svg%3E'" />
+            <div class="header-info">
+                <div class="web-name">room musik <span>horeki</span></div>
+                <div class="sub">
+                    <i class="fas fa-headphones"></i> 20 tracks
+                    <span class="beta-badge"><i class="fas fa-flask"></i> Beta v1.0</span>
+                </div>
+            </div>
+        </div>
 
-# Other files and folders
-.settings/
+        <!-- NOW PLAYING -->
+        <div class="now-playing">
+            <img class="artwork" src="https://c.termai.cc/i178/Ktk.jpg" alt="artwork" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%2315082a%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23a855f7%22 font-size=%2234%22 font-family=%22sans-serif%22%3E🎧%3C/text%3E%3C/svg%3E'" />
+            <div class="np-info">
+                <div class="np-title" id="npTitle">Pilih lagu</div>
+                <div class="np-artist" id="npArtist">room musik horeki</div>
+            </div>
+            <div class="np-status">
+                <i class="fas fa-circle"></i> <span id="statusText">siap</span>
+            </div>
+        </div>
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+        <!-- PLAYER CONTROLS -->
+        <div class="player-controls">
+            <button id="prevBtn" title="Sebelumnya"><i class="fas fa-step-backward"></i></button>
+            <button class="btn-play" id="playBtn" title="Putar / Jeda">
+                <i class="fas fa-play" id="playIcon"></i>
+            </button>
+            <button id="nextBtn" title="Berikutnya"><i class="fas fa-step-forward"></i></button>
+        </div>
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+        <!-- PROGRESS -->
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="time-labels">
+                <span id="currentTime">0:00</span>
+                <span id="totalTime">0:00</span>
+            </div>
+        </div>
+
+        <!-- PLAYLIST 7 LAGU -->
+        <div class="playlist">
+            <div class="playlist-title">
+                <i class="fas fa-list-ul"></i> Daftar putar
+                <span class="count">20 lagu</span>
+            </div>
+
+            <!-- 1 -->
+            <div class="playlist-item" data-index="0" data-url="https://x.xcute.workers.dev/f/audios/3bd7f7b9c2a9.mp3" data-title="DJ BANG DIKA" data-artist="horeki">
+                <div class="pl-index">1</div>
+                <div class="pl-info"><div class="pl-title">DJ BANG DIKA</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur0">--:--</div>
+            </div>
+            <!-- 2 -->
+            <div class="playlist-item" data-index="1" data-url="https://x.xcute.workers.dev/f/audios/5057a08ea032.mp3" data-title="DALINDA X DORA DORA" data-artist="horeki">
+                <div class="pl-index">2</div>
+                <div class="pl-info"><div class="pl-title">DALINDA X DORA DORA</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur1">--:--</div>
+            </div>
+            <!-- 3 -->
+            <div class="playlist-item" data-index="2" data-url="https://x.xcute.workers.dev/f/audios/c79a9ea3b5c7.mp3" data-title="DJ DONGHUA X DANCING JODI" data-artist="horeki">
+                <div class="pl-index">3</div>
+                <div class="pl-info"><div class="pl-title">DJ DONGHUA X DANCING JODI</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur2">--:--</div>
+            </div>
+            <!-- 4 -->
+            <div class="playlist-item" data-index="3" data-url="https://x.xcute.workers.dev/f/audios/ddb6bc9b5faa.mp3" data-title="DJ TERENA METE" data-artist="horeki">
+                <div class="pl-index">4</div>
+                <div class="pl-info"><div class="pl-title">DJ TERENA METE</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur3">--:--</div>
+            </div>
+            <!-- 5 -->
+            <div class="playlist-item" data-index="4" data-url="https://x.xcute.workers.dev/f/audios/cac02c9a2bef.mp3" data-title="DJ BACABU OLD" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">DJ BACABU OLD</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur4">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a180/MOuQArK.mp3" data-title="DJ BLOODLINE MENGKANE" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">DJ BLOODLINE MENGKANE</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur5">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a165/VISggB.mp3" data-title="DJ Bintang 5" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">DJ Bintang 5</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur6">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a187/dhPhBj.mp3" data-title="DJ Pacarku Memang Dekat" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">DJ Pacarku Memang Dekat</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur7">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a190/sDLKSnX.mp3" data-title="Reckless" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Reckless</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur8">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a140/c9PWi.mp3" data-title="Last Child - Bernapas Tanpamu" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Last Child - Bernapas Tanpamu</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur9">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a168/7HzPB.mp3" data-title="Last Child - Pedih" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Last Child - Pedih</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur10">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a143/Tnnf.mp3" data-title="Last Child - Diary Depresi" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Last Child - Diary Depresi</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur11">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a154/pqEy.mp3" data-title="Heart Attack Speed" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Heart Attact Speed</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur12">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a141/DmDwDM.mp3" data-title="Shadow In My Room" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Shadow In My Room</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur13">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a124/cgzfsM.mp3" data-title="Hero" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Hero</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur14">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a171/K9NiGZ.mp3" data-title="Photograph" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Photograph</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur15">--:--</div>
+            </div>
+            <!-- 6 -->
+            <div class="playlist-item" data-index="5" data-url="https://c.termai.cc/a113/bDGR.mp3" data-title="Pop Is A Rockstar" data-artist="horeki">
+                <div class="pl-index">5</div>
+                <div class="pl-info"><div class="pl-title">Pop Is A Rockstar</div><div class="pl-artist">horeki</div></div>
+                <div class="pl-play"><i class="fas fa-play"></i></div>
+                <div class="pl-dur" id="dur16">--:--</div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-top">
+                <div class="info-version">
+                    <i class="fas fa-code"></i>
+                    <span>apk masih tahap beta</span>
+                    <span class="version">v1.0</span>
+                    <span style="color:rgba(255,255,255,0.15);">•</span>
+                    <span>by horeki</span>
+                </div>
+                <a class="btn-contact" href="https://wa.me/62895634448575?text=Halo%20horeki%2C%20saya%20dari%20room%20musik%20" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Kontak Owner
+                </a>
+            </div>
+            <div class="credit">
+                <i class="fas fa-music" style="margin-right:4px;"></i> room musik horeki • 2026
+            </div>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        (function() {
+            'use strict';
+            const audio = document.getElementById('audioPlayer');
+            const playBtn = document.getElementById('playBtn');
+            const playIcon = document.getElementById('playIcon');
+            const progressFill = document.getElementById('progressFill');
+            const progressBar = document.getElementById('progressBar');
+            const currentTimeLabel = document.getElementById('currentTime');
+            const totalTimeLabel = document.getElementById('totalTime');
+            const npTitle = document.getElementById('npTitle');
+            const npArtist = document.getElementById('npArtist');
+            const statusText = document.getElementById('statusText');
+            const items = document.querySelectorAll('.playlist-item');
+            const durElements = {
+                0: document.getElementById('dur0'),
+                1: document.getElementById('dur1'),
+                2: document.getElementById('dur2'),
+                3: document.getElementById('dur3'),
+                4: document.getElementById('dur4'),
+                5: document.getElementById('dur5'),
+                6: document.getElementById('dur6'),
+                7: document.getElementById('dur7'),
+                8: document.getElementById('dur8'),
+                9: document.getElementById('dur9'),
+                10: document.getElementById('dur10'),
+                11: document.getElementById('dur11'),
+                12: document.getElementById('dur12'),
+                13: document.getElementById('dur13'),
+                14: document.getElementById('dur14'),
+                15: document.getElementById('dur15'),
+                16: document.getElementById('dur16'),
+            };
+
+            const tracks = [
+                { url: 'https://x.xcute.workers.dev/f/audios/3bd7f7b9c2a9.mp3', title: 'DJ BANG DIKA', artist: 'horeki' },
+                { url: 'https://x.xcute.workers.dev/f/audios/5057a08ea032.mp3', title: 'DALINDA X DORA DORA', artist: 'horeki' },
+                { url: 'https://x.xcute.workers.dev/f/audios/c79a9ea3b5c7.mp3', title: 'DJ DONGHUA X DANCING JODI', artist: 'horeki' },
+                { url: 'https://x.xcute.workers.dev/f/audios/ddb6bc9b5faa.mp3', title: 'DJ TERENA METE', artist: 'horeki' },
+                { url: 'https://x.xcute.workers.dev/f/audios/cac02c9a2bef.mp3', title: 'DJ BACABU OLD', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a180/MOuQArK.mp3', title: 'DJ BLOODLINE MENGKANE', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a165/VISggB.mp3', title: 'DJ Bintang 5', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a187/dhPhBj.mp3', title: 'DJ Pacarku Memang Dekat', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a190/sDLKSnX.mp3', title: 'Reckless', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a140/c9PWi.mp3', title: 'Last Child - Bernapas Tanpamu', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a168/7HzPB.mp3', title: 'Last Child - Pedih', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a143/Tnnf.mp3', title: 'Last Child - Diary Depresi', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a154/pqEy.mp3', title: 'Heart Attack Speed', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a141/DmDwDM.mp3', title: 'Shadow In My Room', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a124/cgzfsM.mp3', title: 'Hero', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a171/K9NiGZ.mp3', title: 'Photograph', artist: 'horeki' },
+                { url: 'https://c.termai.cc/a113/bDGR.mp3', title: 'Pop Is A Rockstar', artist: 'horeki' },
+            ];
+
+            let currentIndex = 0;
+            let isPlaying = false;
+            let isDragging = false;
+
+            function loadTrack(index) {
+                const track = tracks[index];
+                if (!track) return;
+                audio.src = track.url;
+                audio.load();
+                currentIndex = index;
+                npTitle.textContent = track.title;
+                npArtist.textContent = track.artist;
+                statusText.textContent = 'memuat...';
+                items.forEach((el, i) => {
+                    el.classList.toggle('active', i === index);
+                    const icon = el.querySelector('.pl-play i');
+                    icon.className = (i === index && isPlaying) ? 'fas fa-pause' : 'fas fa-play';
+                });
+                progressFill.style.width = '0%';
+                currentTimeLabel.textContent = '0:00';
+                totalTimeLabel.textContent = '0:00';
+                if (isPlaying) audio.play().catch(() => {});
+            }
+
+            function togglePlay() {
+                if (!audio.src) { loadTrack(0); audio.play().catch(() => {}); return; }
+                if (audio.paused) audio.play().catch(() => {});
+                else audio.pause();
+            }
+
+            function updatePlayButton() {
+                if (audio.paused) {
+                    playIcon.className = 'fas fa-play';
+                    isPlaying = false;
+                    statusText.textContent = 'berhenti';
+                    items.forEach((el, i) => { if (i === currentIndex) el.querySelector('.pl-play i').className = 'fas fa-play'; });
+                } else {
+                    playIcon.className = 'fas fa-pause';
+                    isPlaying = true;
+                    statusText.textContent = 'memutar';
+                    items.forEach((el, i) => { if (i === currentIndex) el.querySelector('.pl-play i').className = 'fas fa-pause'; });
+                }
+            }
+
+            function formatTime(sec) {
+                if (isNaN(sec) || sec === Infinity || sec < 0) return '0:00';
+                const m = Math.floor(sec / 60);
+                const s = Math.floor(sec % 60);
+                return m + ':' + (s < 10 ? '0' : '') + s;
+            }
+
+            function updateProgress() {
+                if (isDragging) return;
+                if (audio.duration && !isNaN(audio.duration)) {
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    progressFill.style.width = pct + '%';
+                    currentTimeLabel.textContent = formatTime(audio.currentTime);
+                    totalTimeLabel.textContent = formatTime(audio.duration);
+                } else {
+                    totalTimeLabel.textContent = '--:--';
+                }
+            }
+
+            function setProgress(e) {
+                const rect = progressBar.getBoundingClientRect();
+                let x = (e.clientX - rect.left) / rect.width;
+                x = Math.min(1, Math.max(0, x));
+                if (audio.duration && !isNaN(audio.duration)) {
+                    audio.currentTime = x * audio.duration;
+                    progressFill.style.width = (x * 100) + '%';
+                    currentTimeLabel.textContent = formatTime(audio.currentTime);
+                }
+            }
+
+            playBtn.addEventListener('click', togglePlay);
+            audio.addEventListener('play', updatePlayButton);
+            audio.addEventListener('pause', updatePlayButton);
+            audio.addEventListener('ended', () => {
+                const next = (currentIndex + 1) % tracks.length;
+                loadTrack(next);
+                if (isPlaying) audio.play().catch(() => {});
+                updatePlayButton();
+            });
+            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('loadedmetadata', () => {
+                totalTimeLabel.textContent = formatTime(audio.duration);
+                const el = durElements[currentIndex];
+                if (el && audio.duration) el.textContent = formatTime(audio.duration);
+                statusText.textContent = audio.paused ? 'siap' : 'memutar';
+            });
+
+            progressBar.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                setProgress(e);
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragUp);
+            });
+
+            function onDragMove(e) { setProgress(e); }
+            function onDragUp(e) {
+                setProgress(e);
+                isDragging = false;
+                document.removeEventListener('mousemove', onDragMove);
+                document.removeEventListener('mouseup', onDragUp);
+            }
+
+            items.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    if (currentIndex === index && !audio.paused) {
+                        audio.pause();
+                    } else {
+                        loadTrack(index);
+                        audio.play().catch(() => {});
+                    }
+                });
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                const prev = (currentIndex - 1 + tracks.length) % tracks.length;
+                loadTrack(prev);
+                if (isPlaying) audio.play().catch(() => {});
+            });
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                const next = (currentIndex + 1) % tracks.length;
+                loadTrack(next);
+                if (isPlaying) audio.play().catch(() => {});
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+            });
+
+            // Inisialisasi
+            loadTrack(0);
+
+            // Preload durasi untuk semua lagu
+            tracks.forEach((track, i) => {
+                if (i === 0) return;
+                const tmp = new Audio();
+                tmp.preload = 'metadata';
+                tmp.src = track.url;
+                tmp.addEventListener('loadedmetadata', () => {
+                    const dur = tmp.duration;
+                    if (durElements[i] && !isNaN(dur)) durElements[i].textContent = formatTime(dur);
+                    tmp.src = '';
+                });
+                tmp.addEventListener('error', () => {});
+            });
+
+            audio.addEventListener('error', () => {
+                statusText.textContent = 'error';
+                console.warn('Audio error:', audio.error);
+            });
+            console.log('🎵 room musik horeki v1.0 siap!');
+        })();
+    </script>
+</body>
+</html>
